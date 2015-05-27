@@ -1,0 +1,49 @@
+<pre>
+  MIP:     MIP-0001
+  Title:   Chainkey Module Classifications
+  Author:  Tyler Willis
+  Status:  Draft
+  Created: 2015-05-26
+</pre>
+
+==Abstract==
+
+This MIP defines a set of types used to classify proposed Chainkey modules based on the amount of change in Encompass required to implement them.
+
+==Motivation==
+
+When implementing new currencies via chainkey modules, it's important that the addition causes the least significant effect on the rest of Encompass as possible. Generally, the more modular a chainkey module is, the better.
+
+==Types==
+
+The following types can be used to classify new chainkey module pull requests. Declaring a PR to be one of these types is encouraged.
+
+===Type A===
+
+Type A Chainkey modules are the most modular. They need absolutely no changes to the existing codebase to implement. In practice, this means that in addition to the module itself, only three files are altered by the pull request:
+
+* <code>setup.py</code>: The module is added to <code>py_modules</code> in the setup function.
+* <code>lib/chainparams.py</code>: Metadata about the chain is added to <code>_known_chains</code>.
+* <code>lib/chains/__init__.py</code>: The module is imported in the <code>__init__</code> file of the chains package.
+
+===Type B===
+
+Type B Chainkey modules require minor changes to the existing codebase, but do not introduce new dependencies. These changes may include one or more of the following:
+
+* Additional chainhooks are added.
+* New files (other than the chainkey module) are created.
+
+===Type C===
+
+Type C Chainkey modules introduce new dependencies to the codebase. These may include:
+
+* Hashing algorithms.
+* Libraries.
+
+==Tests==
+
+As the '''Type''' of a Chainkey module descends, everything that applies to the modules types above it also applies to it (e.g. Type C Chainkey modules require everything that Type B Chainkey modules do).
+
+Type B Chainkey modules should include at least one test which ensures that the new functionality works as expected.
+
+Type C Chainkey modules should include at least one test for every separate item added. For example, if a new hashing algorithm is implemented, there must be at least one test that verifies the algorithm is implemented correctly.
